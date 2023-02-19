@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CommandService.Data.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace CommandService.Data
 {
@@ -11,5 +12,12 @@ namespace CommandService.Data
         }
 
         #endregion Constructors
+
+        #region Properties
+
+        public DbSet<Command> Commands { get; set; }
+        public DbSet<Platform> Platforms { get; set; }
+
+        #endregion Properties
     }
 }
