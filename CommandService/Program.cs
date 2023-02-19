@@ -19,6 +19,17 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 var app = builder.Build();
 
+builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
+{
+    var env = hostingContext.HostingEnvironment;
+
+    config.SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true) //load base settings
+                .AddJsonFile("appsettings.local.json", optional: true, reloadOnChange: true) //load local settings
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true) //load environment settings
+                .AddEnvironmentVariables();
+});
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
