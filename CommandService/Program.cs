@@ -1,4 +1,6 @@
 using CommandService.Data;
+using CommandService.Data.Repos;
+using CommandService.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +29,9 @@ builder.Services.AddDbContext<DataContext>(options =>
 
     options.UseSqlServer(connectionString);
 });
+
+builder.Services.AddScoped<PlatformRepo>();
+builder.Services.AddScoped<PlatformService>();
 
 var app = builder.Build();
 
