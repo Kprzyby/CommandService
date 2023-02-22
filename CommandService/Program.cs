@@ -10,15 +10,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<DataContext>(options =>
-{
-    string connectionString = builder.Configuration.GetConnectionString("DBConnection");
-
-    options.UseSqlServer(connectionString);
-});
-
-var app = builder.Build();
-
 builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
 {
     var env = hostingContext.HostingEnvironment;
@@ -29,6 +20,15 @@ builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true) //load environment settings
                 .AddEnvironmentVariables();
 });
+
+builder.Services.AddDbContext<DataContext>(options =>
+{
+    string connectionString = builder.Configuration.GetConnectionString("DBConnection");
+
+    options.UseSqlServer(connectionString);
+});
+
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
