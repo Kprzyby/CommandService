@@ -20,18 +20,30 @@ builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
 {
     var env = hostingContext.HostingEnvironment;
 
+    if (env.IsProduction())
+    {
+        builder.Services.AddDbContext<DataContext>(options =>
+        {
+            string connectionString = builder.Configuration.GetConnectionString("K8SDBConnection");
+
+            options.UseSqlServer(connectionString);
+        });
+    }
+    else
+    {
+        builder.Services.AddDbContext<DataContext>(options =>
+        {
+            string connectionString = builder.Configuration.GetConnectionString("DBConnection");
+
+            options.UseSqlServer(connectionString);
+        });
+    }
+
     config.SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true) //load base settings
                 .AddJsonFile("appsettings.local.json", optional: true, reloadOnChange: true) //load local settings
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true) //load environment settings
                 .AddEnvironmentVariables();
-});
-
-builder.Services.AddDbContext<DataContext>(options =>
-{
-    string connectionString = builder.Configuration.GetConnectionString("DBConnection");
-
-    options.UseSqlServer(connectionString);
 });
 
 builder.Services.AddScoped<CommandRepo>();
@@ -47,6 +59,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+//if in production environment, apply migrations
+if (app.Environment.IsProduction())
+{
+    DBPrep.ApplyMigrations(app);
 }
 
 app.UseHttpsRedirection();
