@@ -6,6 +6,6 @@
         public string Describtion { get; set; }
         public string CommandLine { get; set; }
         public int CurrentPlatformId { get; set; }
-        public int PlatformId { get; set; }
+        public int NewPlatformId { get; set; }
     }
 }

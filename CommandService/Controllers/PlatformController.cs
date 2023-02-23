@@ -1,4 +1,5 @@
-﻿using CommandService.Services;
+﻿using CommandService.Data.DTOs.Platform;
+using CommandService.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CommandService.Controllers
@@ -23,8 +24,16 @@ namespace CommandService.Controllers
 
         #region Methods
 
+        /// <summary>
+        /// Asynchronous method for loading all platforms
+        /// </summary>
+        /// <returns>A list of objects containing information about each platform</returns>
+        /// <response code="500">Error message</response>
+        /// <response code="200">A list of objects containing information about each platform</response>
         [HttpGet]
         [Route("c/Platform/GetPlatformsAsync")]
+        [ProducesResponseType(typeof(string), 500)]
+        [ProducesResponseType(typeof(List<ReadPlatformDTO>), 200)]
         public async Task<IActionResult> GetPlatformsAsync()
         {
             var platforms = await _platformService.GetPlatformsAsync();

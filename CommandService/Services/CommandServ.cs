@@ -137,7 +137,7 @@ namespace CommandService.Services
             try
             {
                 bool platformExists = await _platformRepo.
-                        PlatformExistsAsync(dto.PlatformId);
+                        PlatformExistsAsync(dto.NewPlatformId);
 
                 if (platformExists == false)
                 {
@@ -154,7 +154,7 @@ namespace CommandService.Services
 
                 oldCommand.Describtion = dto.Describtion;
                 oldCommand.CommandLine = dto.CommandLine;
-                oldCommand.PlatformId = dto.PlatformId;
+                oldCommand.PlatformId = dto.NewPlatformId;
                 oldCommand.UpdatedDate = DateTime.Now;
 
                 await _commandRepo.UpdateCommandAsync(oldCommand);
