@@ -30,6 +30,9 @@ builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(connectionString);
 });
 
+builder.Services.AddScoped<CommandRepo>();
+builder.Services.AddScoped<CommandServ>();
+
 builder.Services.AddScoped<PlatformRepo>();
 builder.Services.AddScoped<PlatformService>();
 

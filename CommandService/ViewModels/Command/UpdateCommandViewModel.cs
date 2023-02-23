@@ -11,5 +11,8 @@ namespace CommandService.ViewModels.Command
 
         [Required]
         public string CommandLine { get; set; }
+
+        [Required]
+        public int PlatformId { get; set; }
     }
 }

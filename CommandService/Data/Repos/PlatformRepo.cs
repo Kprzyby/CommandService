@@ -27,6 +27,14 @@ namespace CommandService.Data.Repos
             await _context.SaveChangesAsync();
         }
 
+        public async Task<bool> PlatformExistsAsync(int id)
+        {
+            bool result = await _context.Platforms
+                .AnyAsync(p => p.Id == id);
+
+            return result;
+        }
+
         public async Task<Platform> GetPlatformByIdAsync(int id)
         {
             Platform result = await _context.Platforms
