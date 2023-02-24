@@ -1,7 +1,8 @@
 ﻿using CommandService.Data.DTOs.Command;
 using CommandService.Data.Entities;
 using CommandService.Data.Repos;
-using Microsoft.EntityFrameworkCore;
+using CommandService.Helpers;
+using X.PagedList;
 
 namespace CommandService.Services
 {
@@ -62,7 +63,7 @@ namespace CommandService.Services
             }
         }
 
-        public async Task<List<ReadCommandDTO>> GetCommandsForPlatformAsync(int platformId)
+        public async Task<ReadCommandsResponseDTO> GetCommandsForPlatformAsync(int platformId, CommandFilteringDTO filteringInfo)
         {
             try
             {
@@ -74,8 +75,45 @@ namespace CommandService.Services
                     return null;
                 }
 
-                List<ReadCommandDTO> result = await _commandRepo
-                    .GetCommandsForPlatform(platformId)
+                IQueryable<Command> commands = _commandRepo
+                    .GetCommandsForPlatform(platformId);
+
+                if (String.IsNullOrEmpty(filteringInfo.CommandLineFilterValue) == false)
+                {
+                    commands = commands
+                        .Where(c => c.CommandLine
+                        .ToUpper()
+                        .StartsWith(filteringInfo.CommandLineFilterValue.ToUpper()));
+                }
+
+                if (String.IsNullOrEmpty(filteringInfo.DescribtionFilterValue) == false)
+                {
+                    commands = commands
+                        .Where(c => c.Describtion
+                        .ToUpper()
+                        .StartsWith(filteringInfo.DescribtionFilterValue.ToUpper()));
+                }
+
+                if (filteringInfo.SortInfo.HasValue == false)
+                {
+                    commands = commands.OrderBy(c => c.CommandLine);
+                }
+                else
+                {
+                    List<KeyValuePair<string, string>> sortInfo = new List<KeyValuePair<string, string>>();
+                    sortInfo.Add((KeyValuePair<string, string>)filteringInfo.SortInfo);
+
+                    commands = SortingHelper<Command>.Sort(commands, sortInfo);
+                }
+
+                ReadCommandsResponseDTO result = new ReadCommandsResponseDTO();
+                result.TotalCount = commands.Count();
+                result.PageNumber = filteringInfo.PageNumber;
+                result.PageSize = filteringInfo.PageSize;
+                result.DescribtionFilterValue = filteringInfo.DescribtionFilterValue;
+                result.CommandLineFilterValue = filteringInfo.CommandLineFilterValue;
+                result.SortInfo = filteringInfo.SortInfo;
+                result.Commands = await commands
                     .Select(c => new ReadCommandDTO()
                     {
                         Id = c.Id,
@@ -83,7 +121,7 @@ namespace CommandService.Services
                         CommandLine = c.CommandLine,
                         PlatformId = c.PlatformId
                     })
-                    .ToListAsync();
+                    .ToPagedListAsync(filteringInfo.PageNumber, filteringInfo.PageSize);
 
                 return result;
             }

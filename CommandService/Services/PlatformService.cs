@@ -2,8 +2,6 @@
 using CommandService.Data.Entities;
 using CommandService.Data.Repos;
 using CommandService.Helpers;
-using CommandService.ViewModels.Platform;
-using Microsoft.EntityFrameworkCore;
 using X.PagedList;
 
 namespace CommandService.Services
@@ -58,7 +56,7 @@ namespace CommandService.Services
             {
                 IQueryable<Platform> platforms = _platformRepo.GetPlatforms();
 
-                if (filteringDTO.NameFilterValue != null)
+                if (String.IsNullOrEmpty(filteringDTO.NameFilterValue) == false)
                 {
                     platforms = platforms.
                         Where(p => p.Name

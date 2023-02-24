@@ -54,23 +54,41 @@ namespace CommandService.Controllers
         /// Asynchronous method for loading all commands for the platform specified by an id
         /// </summary>
         /// <param name="platformId">The id of the platform</param>
-        /// <returns>A list of objects containing information about each command</returns>
+        /// <param name="filteringViewModel">Object containing information about the paging, filtering and order</param>
+        /// <remarks>
+        /// The number of the first page is 1 and the minimal size of the page is also 1.
+        ///
+        /// The "SortInfo" parameter's key should be "CommandLine" and its value - "asc" or "desc" depending on the desired sort order.
+        /// If this parameter is not provided, the commands will be sorted by command lines ascendingly.
+        ///
+        /// The filters will return commands that start with the given values (not case sensitive).
+        /// </remarks>
+        /// <returns>Object containing a list of commands along with information about paging, filtering and order</returns>
         /// <response code="404">Error message</response>
-        /// <response code="200">A list of objects containing information about each command</response>
+        /// <response code="200">Object containing a list of commands along with information about paging, filtering and order</response>
         [HttpGet]
         [Route("c/Platform/{platformId}/Command/GetCommandsForPlatformAsync")]
         [ProducesResponseType(typeof(string), 404)]
-        [ProducesResponseType(typeof(List<ReadCommandDTO>), 200)]
-        public async Task<IActionResult> GetCommandsForPlatformAsync(int platformId)
+        [ProducesResponseType(typeof(ReadCommandsResponseDTO), 200)]
+        public async Task<IActionResult> GetCommandsForPlatformAsync(int platformId, ReadCommandsViewModel filteringViewModel)
         {
-            var commands = await _commandService.GetCommandsForPlatformAsync(platformId);
+            CommandFilteringDTO dto = new CommandFilteringDTO()
+            {
+                PageSize = filteringViewModel.PageSize,
+                PageNumber = filteringViewModel.PageNumber,
+                SortInfo = filteringViewModel.SortInfo,
+                DescribtionFilterValue = filteringViewModel.DescribtionFilterValue,
+                CommandLineFilterValue = filteringViewModel.CommandLineFilterValue
+            };
 
-            if (commands == null)
+            var response = await _commandService.GetCommandsForPlatformAsync(platformId, dto);
+
+            if (response == null)
             {
                 return NotFound("Platform doesn't exist");
             }
 
-            return Ok(commands);
+            return Ok(response);
         }
 
         /// <summary>
