@@ -70,7 +70,7 @@ namespace CommandService.Controllers
         [Route("c/Platform/{platformId}/Command/GetCommandsForPlatformAsync")]
         [ProducesResponseType(typeof(string), 404)]
         [ProducesResponseType(typeof(ReadCommandsResponseDTO), 200)]
-        public async Task<IActionResult> GetCommandsForPlatformAsync(int platformId, ReadCommandsViewModel filteringViewModel)
+        public async Task<IActionResult> GetCommandsForPlatformAsync(int platformId, [FromQuery] ReadCommandsViewModel filteringViewModel)
         {
             CommandFilteringDTO dto = new CommandFilteringDTO()
             {

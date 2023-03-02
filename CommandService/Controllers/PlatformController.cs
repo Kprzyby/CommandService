@@ -44,7 +44,7 @@ namespace CommandService.Controllers
         [Route("c/Platform/GetPlatformsAsync")]
         [ProducesResponseType(typeof(string), 500)]
         [ProducesResponseType(typeof(ReadPlatformsResponseDTO), 200)]
-        public async Task<IActionResult> GetPlatformsAsync(ReadPlatformsViewModel filterViewModel)
+        public async Task<IActionResult> GetPlatformsAsync([FromQuery] ReadPlatformsViewModel filterViewModel)
         {
             PlatformFilteringDTO dto = new PlatformFilteringDTO()
             {
