@@ -66,11 +66,11 @@ namespace CommandService.Controllers
         /// <returns>Object containing a list of commands along with information about paging, filtering and order</returns>
         /// <response code="404">Error message</response>
         /// <response code="200">Object containing a list of commands along with information about paging, filtering and order</response>
-        [HttpGet]
+        [HttpPost]
         [Route("c/Platform/{platformId}/Command/GetCommandsForPlatformAsync")]
         [ProducesResponseType(typeof(string), 404)]
         [ProducesResponseType(typeof(ReadCommandsResponseDTO), 200)]
-        public async Task<IActionResult> GetCommandsForPlatformAsync(int platformId, [FromQuery] ReadCommandsViewModel filteringViewModel)
+        public async Task<IActionResult> GetCommandsForPlatformAsync(int platformId, ReadCommandsViewModel filteringViewModel)
         {
             CommandFilteringDTO dto = new CommandFilteringDTO()
             {

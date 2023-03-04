@@ -2,6 +2,8 @@ using CommandService.Data;
 using CommandService.Data.Repos;
 using CommandService.Services;
 using Microsoft.EntityFrameworkCore;
+using ServiceBusConsumer.ConsumerServices;
+using ServiceBusConsumer.EventProcessors;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,9 +54,11 @@ builder.Services.AddScoped<CommandServ>();
 builder.Services.AddScoped<PlatformRepo>();
 builder.Services.AddScoped<PlatformService>();
 
+builder.Services.AddHostedService<PlatformsConsumerService>();
+builder.Services.AddSingleton<PlatformsEventProcessor>();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

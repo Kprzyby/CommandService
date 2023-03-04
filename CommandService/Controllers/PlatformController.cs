@@ -40,11 +40,11 @@ namespace CommandService.Controllers
         /// <returns>Object containing a list of platforms along with information about paging, filtering and order</returns>
         /// <response code="500">Error message</response>
         /// <response code="200">Object containing a list of platforms along with information about paging, filtering and order</response>
-        [HttpGet]
+        [HttpPost]
         [Route("c/Platform/GetPlatformsAsync")]
         [ProducesResponseType(typeof(string), 500)]
         [ProducesResponseType(typeof(ReadPlatformsResponseDTO), 200)]
-        public async Task<IActionResult> GetPlatformsAsync([FromQuery] ReadPlatformsViewModel filterViewModel)
+        public async Task<IActionResult> GetPlatformsAsync(ReadPlatformsViewModel filterViewModel)
         {
             PlatformFilteringDTO dto = new PlatformFilteringDTO()
             {
